@@ -41,9 +41,102 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid rgba(56, 189, 248, 0.5);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.4s ease-out;
+            position: relative;
+        }
+        .modal-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #06b6d4, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .modal-text {
+            text-align: center;
+            line-height: 1.8;
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+        .modal-button {
+            display: block;
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(to right, #06b6d4, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.5);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
     </style>
 </head>
 <body class="antialiased">
+
+    <!-- Modal Pop-up Disclaimer -->
+    <div id="disclaimerModal" class="modal-overlay active">
+        <div class="modal-content">
+            <div class="modal-icon">🤖</div>
+            <h2 class="modal-title">Penafian AI</h2>
+            <p class="modal-text">
+                Fakta ini dijana oleh AI bagi memenuhi pertanyaan peribadi.<br>
+                <strong>Tidak ada paksaan dalam beragama.</strong>
+            </p>
+            <button class="modal-button" onclick="closeModal()">Saya Faham</button>
+        </div>
+    </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
@@ -194,6 +287,18 @@
     <script>
         // Auto-update tahun semasa
         document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            document.getElementById('disclaimerModal').classList.remove('active');
+        }
+
+        // Tutup modal jika klik di luar content
+        document.getElementById('disclaimerModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
         function wrapLabel(text, maxLength = 16) {
             if (text.length <= maxLength) return text;
             let words = text.split(' ');
