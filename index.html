@@ -121,6 +121,98 @@
                 transform: translateY(0) scale(1);
             }
         }
+        /* Feedback Button */
+        .feedback-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .feedback-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(236, 72, 153, 0.6);
+        }
+        /* Feedback Form Styles */
+        .feedback-form {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(139, 92, 246, 0.5);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            color: #cbd5e1;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s;
+        }
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .form-submit {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(to right, #8b5cf6, #ec4899);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.5);
+        }
+        .form-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .success-message {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            color: #86efac;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -137,6 +229,59 @@
             <button class="modal-button" onclick="closeModal()">Saya Faham</button>
         </div>
     </div>
+
+    <!-- Modal Feedback Form -->
+    <div id="feedbackModal" class="modal-overlay">
+        <div class="feedback-form">
+            <h2 class="modal-title">📝 Tinggalkan Feedback</h2>
+            <div id="successMessage" class="success-message" style="display: none;">
+                ✅ Terima kasih! Feedback anda telah dihantar.
+            </div>
+            <form id="feedbackForm" onsubmit="submitFeedback(event)">
+                <input type="hidden" name="access_key" value="48dde430-6414-423d-9620-adaf6b166eb8">
+                <input type="hidden" name="subject" value="Feedback Baru - Analisis Petrol">
+                <input type="hidden" name="from_name" value="Merlin Petrol Analysis">
+                <div class="form-group">
+                    <label class="form-label" for="name">Nama (Pilihan)</label>
+                    <input type="text" id="name" name="name" class="form-input" placeholder="Nama anda">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="email">Email (Pilihan)</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="email@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="rating">Rating</label>
+                    <div style="display: flex; gap: 10px; justify-content: center; font-size: 2rem;">
+                        <span class="rating-star" data-rating="1" onclick="setRating(1)">⭐</span>
+                        <span class="rating-star" data-rating="2" onclick="setRating(2)">⭐</span>
+                        <span class="rating-star" data-rating="3" onclick="setRating(3)">⭐</span>
+                        <span class="rating-star" data-rating="4" onclick="setRating(4)">⭐</span>
+                        <span class="rating-star" data-rating="5" onclick="setRating(5)">⭐</span>
+                    </div>
+                    <input type="hidden" id="rating" name="rating" value="5">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="message">Feedback / Komen *</label>
+                    <textarea id="message" name="message" class="form-textarea" placeholder="Kongsi pendapat anda tentang artikel ini..." required></textarea>
+                </div>
+                <input type="hidden" name="redirect" value="false">
+                <button type="submit" class="form-submit" id="submitBtn">
+                    Hantar Feedback
+                </button>
+                <button type="button" class="modal-button" onclick="closeFeedbackModal()" style="margin-top: 10px; background: rgba(100, 116, 139, 0.5);">
+                    Batal
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Feedback Button -->
+    <button class="feedback-btn" onclick="openFeedbackModal()">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3.293 3.293 3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+        </svg>
+        Feedback
+    </button>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
@@ -337,7 +482,96 @@
         // Panggil fungsi visitor counter
         updateVisitorCount();
 
-        // Fungsi untuk menutup modal
+        // Rating System
+        let selectedRating = 5;
+        function setRating(rating) {
+            selectedRating = rating;
+            document.getElementById('rating').value = rating;
+            const stars = document.querySelectorAll('.rating-star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.style.opacity = '1';
+                    star.style.transform = 'scale(1.2)';
+                } else {
+                    star.style.opacity = '0.3';
+                    star.style.transform = 'scale(1)';
+                }
+            });
+        }
+
+        // Initialize rating stars
+        document.addEventListener('DOMContentLoaded', () => {
+            setRating(5);
+        });
+
+        // Feedback Form Functions
+        function openFeedbackModal() {
+            document.getElementById('feedbackModal').classList.add('active');
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedbackModal').classList.remove('active');
+            document.getElementById('feedbackForm').reset();
+            document.getElementById('successMessage').style.display = 'none';
+            setRating(5);
+        }
+
+        async function submitFeedback(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const form = event.target;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Menghantar...';
+            
+            const formData = new FormData(form);
+            
+            // Tambah timestamp
+            formData.append('timestamp', new Date().toLocaleString('ms-MY'));
+
+            try {
+                // Hantar ke Web3Forms API
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Simpan ke localStorage sebagai backup
+                    let feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+                    feedbacks.push({
+                        name: formData.get('name') || 'Tanpa Nama',
+                        email: formData.get('email') || 'Tidak diberikan',
+                        rating: formData.get('rating'),
+                        message: formData.get('message'),
+                        timestamp: formData.get('timestamp')
+                    });
+                    localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    form.reset();
+                    setRating(5);
+                    
+                    setTimeout(() => {
+                        closeFeedbackModal();
+                    }, 2500);
+                } else {
+                    throw new Error('Submission failed');
+                }
+
+            } catch (error) {
+                alert('Maaf, terdapat masalah menghantar feedback. Sila cuba lagi atau hubungi admin.');
+                console.error('Error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Hantar Feedback';
+            }
+        }
+
+        // Fungsi untuk menutup modal disclaimer
         function closeModal() {
             document.getElementById('disclaimerModal').classList.remove('active');
         }
@@ -346,6 +580,12 @@
         document.getElementById('disclaimerModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();
+            }
+        });
+
+        document.getElementById('feedbackModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFeedbackModal();
             }
         });
         function wrapLabel(text, maxLength = 16) {
