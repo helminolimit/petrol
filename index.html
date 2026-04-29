@@ -279,14 +279,49 @@
 
     <!-- Footer dengan tahun auto-update -->
     <footer class="text-center py-8 mt-12 border-t border-slate-700">
-        <p class="text-slate-400">
+        <p class="text-slate-400 mb-3">
             &copy; <span id="currentYear"></span> Merlin. Hak Cipta Terpelihara.
         </p>
+        <div class="flex items-center justify-center gap-2 text-cyan-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+            <span class="text-sm">
+                Pelawat: <span id="visitorCount" class="font-bold text-pink-400">0</span>
+            </span>
+        </div>
     </footer>
 
     <script>
         // Auto-update tahun semasa
         document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Visitor Counter
+        function updateVisitorCount() {
+            let count = localStorage.getItem('visitorCount');
+            if (count === null) {
+                count = 0;
+            }
+            count = parseInt(count) + 1;
+            localStorage.setItem('visitorCount', count);
+            
+            // Animasi counter
+            const counterElement = document.getElementById('visitorCount');
+            let currentCount = 0;
+            const increment = Math.ceil(count / 50);
+            const timer = setInterval(() => {
+                currentCount += increment;
+                if (currentCount >= count) {
+                    currentCount = count;
+                    clearInterval(timer);
+                }
+                counterElement.textContent = currentCount.toLocaleString();
+            }, 20);
+        }
+        
+        // Panggil fungsi visitor counter
+        updateVisitorCount();
 
         // Fungsi untuk menutup modal
         function closeModal() {
