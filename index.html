@@ -297,27 +297,41 @@
         // Auto-update tahun semasa
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        // Visitor Counter
-        function updateVisitorCount() {
-            let count = localStorage.getItem('visitorCount');
-            if (count === null) {
-                count = 0;
-            }
-            count = parseInt(count) + 1;
-            localStorage.setItem('visitorCount', count);
-            
-            // Animasi counter
+        // Global Visitor Counter menggunakan CountAPI
+        async function updateVisitorCount() {
             const counterElement = document.getElementById('visitorCount');
-            let currentCount = 0;
-            const increment = Math.ceil(count / 50);
-            const timer = setInterval(() => {
-                currentCount += increment;
-                if (currentCount >= count) {
-                    currentCount = count;
-                    clearInterval(timer);
+            const namespace = 'merlin-petrol-analysis';
+            const key = 'page-visits';
+            
+            try {
+                // Panggil API untuk increment dan dapatkan count
+                const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
+                const data = await response.json();
+                
+                if (data.value) {
+                    // Animasi counter
+                    let currentCount = 0;
+                    const targetCount = data.value;
+                    const increment = Math.ceil(targetCount / 50);
+                    const timer = setInterval(() => {
+                        currentCount += increment;
+                        if (currentCount >= targetCount) {
+                            currentCount = targetCount;
+                            clearInterval(timer);
+                        }
+                        counterElement.textContent = currentCount.toLocaleString();
+                    }, 20);
+                } else {
+                    counterElement.textContent = '1';
                 }
-                counterElement.textContent = currentCount.toLocaleString();
-            }, 20);
+            } catch (error) {
+                console.error('Error fetching visitor count:', error);
+                // Fallback ke localStorage jika API gagal
+                let count = localStorage.getItem('visitorCount') || 0;
+                count = parseInt(count) + 1;
+                localStorage.setItem('visitorCount', count);
+                counterElement.textContent = count.toLocaleString();
+            }
         }
         
         // Panggil fungsi visitor counter
